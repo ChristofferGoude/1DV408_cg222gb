@@ -1,3 +1,39 @@
+/* Basics */
+
 body {
+	background-image:url(../Images/bg.png);
+	background-repeat:repeat;
+	background-attachment:fixed;
+	overflow-y:scroll;
+	color:#231f20;
+}
+
+/* Classes */
+
+.wrapper{
+	background-color:rgba(255,255,255,0.8);
+	width:960px;
+	height:100%;
+	margin:0 auto;
+}
+
+.content{
+	width:920px;
+	float:left;
+	padding:20px;
+}
+
+.center{
+	display:block;
+	margin:0 auto;
+}
+
+/* IDs */
+
+#admin{
+	background-color:#FFFF00;
+	width:920px;
+	float:left;
+	padding:20px;
 
 }
