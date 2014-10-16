@@ -47,6 +47,14 @@ class controller{
 			$this->body = $this->view->registerUser() . $this->view->notLoggedIn();
 		}
 		
+		if($this->view->createQuizAttempt()){
+			$newQuizName = $this->view->getNewQuizName();	
+			$newQuiz = $this->view->getNewQuizInfo();
+			$this->model->createNewQuiz($newQuizName, $newQuiz);
+			
+			$this->body = $this->sessionStatus();
+		}
+		
 		return $this->view->getMainPage($this->body);
 	}
 	

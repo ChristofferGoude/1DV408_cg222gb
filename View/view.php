@@ -21,12 +21,13 @@ class view{
 	private static $q1a1 = "q1a1";
 	private static $q1a2 = "q1a2";
 	private static $q1a3 = "q1a3";
-	private static $q1a1 = "q2a1";
-	private static $q1a2 = "q2a2";
-	private static $q1a3 = "q2a3";
-	private static $q1a1 = "q3a1";
-	private static $q1a2 = "q3a2";
-	private static $q1a3 = "q3a3";
+	private static $q2a1 = "q2a1";
+	private static $q2a2 = "q2a2";
+	private static $q2a3 = "q2a3";
+	private static $q3a1 = "q3a1";
+	private static $q3a2 = "q3a2";
+	private static $q3a3 = "q3a3";
+	private static $addQuiz = "addQuiz";
 	
 	/**
 	 * @return String (Html)
@@ -119,12 +120,41 @@ class view{
 	
 	public function getAdminInterface(){
 		$html = "<div id='admin'>
-				 	<h1>Admin är inloggad, här ska admininterface vara</h1>
+				 	<h2>Admininterface</h2>
 				 	<form action='?' method='post'>		
-						 <label for='Quizname' >Quiznamn :</label>
-						 <input type='text' size='30' name='" . self::$quizname . "' id='User' value='' />
-						 
-						 <input type='submit' name='" . self::$login . "' value='Skapa Quiz!' />
+						<label for='Quizname' >Quiznamn :</label><br />
+						<input type='text' size='30' name='" . self::$quizname . "' id='Quizname' value='' /><br />
+						<label for='Question1' >Fråga 1 :</label><br />
+						<input type='text' size='30' name='" . self::$question1 . "' id='Question1' value='' /><br />		 
+							<div class='answers'>
+								<label for='Q1A1' >Svarsalternativ 1 :</label><br />
+								<input type='text' size='30' name='" . self::$q1a1 . "' id='Q1A1' value='' /><br />
+								<label for='Q1A2' >Svarsalternativ 2 :</label><br />
+								<input type='text' size='30' name='" . self::$q1a2 . "' id='Q1A2' value='' /><br />
+								<label for='Q1A3' >Svarsalternativ 3 :</label><br />
+								<input type='text' size='30' name='" . self::$q1a3 . "' id='Q1A3' value='' /><br />
+							 </div>
+						<label for='Question1' >Fråga 2 :</label><br />
+						<input type='text' size='30' name='" . self::$question2 . "' id='Question2' value='' /><br />
+							<div class='answers'>
+							 	<label for='Q2A1' >Svarsalternativ 1 :</label><br />
+							 	<input type='text' size='30' name='" . self::$q2a1 . "' id='Q2A1' value='' /><br />
+								<label for='Q2A2' >Svarsalternativ 2 :</label><br />
+								<input type='text' size='30' name='" . self::$q2a2 . "' id='Q2A2' value='' /><br />
+								<label for='Q2A3' >Svarsalternativ 3 :</label><br />
+								<input type='text' size='30' name='" . self::$q2a3 . "' id='Q2A3' value='' /><br />
+							</div>
+						 <label for='Question1' >Fråga 3 :</label><br />
+						 <input type='text' size='30' name='" . self::$question3 . "' id='Question3' value='' /><br />
+						 	<div class='answers'>
+							 	<label for='Q3A1' >Svarsalternativ 1 :</label><br />
+							 	<input type='text' size='30' name='" . self::$q3a1 . "' id='Q3A1' value='' /><br />
+								<label for='Q3A2' >Svarsalternativ 2 :</label><br />
+								<input type='text' size='30' name='" . self::$q3a2 . "' id='Q3A2' value='' /><br />
+								<label for='Q3A3' >Svarsalternativ 3 :</label><br />
+								<input type='text' size='30' name='" . self::$q3a3 . "' id='Q3A3' value='' /><br />
+							</div>
+						<input type='submit' name='" . self::$addQuiz . "' value='Skapa Quiz!' />
 					 </form>
 				 </div>";		
 			
@@ -173,6 +203,33 @@ class view{
 						<input type='submit' name='" . self::$logout . "' value='Logga ut' />
 					</form>
 				</div>";
+	}
+	
+	//FUNCTIONS USED WHEN CREATING A QUIZ
+	
+	public function getNewQuizName(){
+		return $_POST[self::$quizname];
+	}
+	
+	public function getNewQuizInfo(){
+		$newQuiz = array(array($_POST[self::$question1],
+						 	   $_POST[self::$q1a1],
+						 	   $_POST[self::$q1a2],
+						 	   $_POST[self::$q1a3]),
+						 array($_POST[self::$question2],
+ 						 	   $_POST[self::$q2a1],
+						 	   $_POST[self::$q2a2],
+						 	   $_POST[self::$q2a3]),
+						 array($_POST[self::$question3],
+ 						 	   $_POST[self::$q3a1],
+						 	   $_POST[self::$q3a2],
+						 	   $_POST[self::$q3a3]));
+						 
+		return $newQuiz;
+	}
+	
+	public function createQuizAttempt(){
+		return isset($_POST[self::$addQuiz]);
 	}
 	
 	//BACK-BUTTON

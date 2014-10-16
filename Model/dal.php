@@ -126,4 +126,40 @@ class dal{
 			return "Databasqueryn misslyckades. " . $e->getMessage();
 		}
 	}
+	
+	public function createNewQuiz($newQuizName, $newQuiz){
+		$quizID = "";	
+			
+		try{
+			if(false){
+				throw new \PDOException("Du måste ange både användarnamn och lösenord!");
+			}
+			
+			$this->createConnection();	
+			
+			$sql = "INSERT INTO quiz (quizname) VALUES (:quizname)";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizname", $newQuizName);
+			$query->execute();
+			$quizID = self::$dbh->lastInsertId();
+			
+			foreach($newQuiz as $question){  
+				$sql = "INSERT INTO questions (quizID, question, answer1, answer2, answer3) VALUES (:quizID, :question, :answer1, :answer2, :answer3)";	
+				$query = self::$dbh->prepare($sql);
+				$query->bindParam(":quizID", $quizID);
+				$query->bindParam(":question", $question[0]);
+				$query->bindParam(":answer1", $question[1]);
+				$query->bindParam(":answer2", $question[2]);
+				$query->bindParam(":answer3", $question[3]);
+				$query->execute();	  		
+			}
+			
+			self::$dbh = null;
+							  
+			return "Ditt quiz skapades!";
+		}
+		catch (\PDOException $e){
+			return "Det gick inte att registrera dig. " . $e->getMessage();
+		}
+	}
 }

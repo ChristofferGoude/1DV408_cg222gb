@@ -47,4 +47,8 @@ class model{
 	public function getQuiz(){
 		return $this->db->getQuiz();
 	}
+	
+	public function createNewQuiz($newQuizName, $newQuiz){
+		return $this->db->createNewQuiz($newQuizName, $newQuiz);
+	}
 }

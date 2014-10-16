@@ -8,6 +8,11 @@ body {
 	color:#231f20;
 }
 
+input{
+	padding:5px;
+	margin:0 0 20px 0;
+}
+
 /* Classes */
 
 .wrapper{
@@ -23,6 +28,10 @@ body {
 	padding:20px;
 }
 
+.answers{
+	padding:0 0 0 40px;
+}
+
 .center{
 	display:block;
 	margin:0 auto;
@@ -31,7 +40,7 @@ body {
 /* IDs */
 
 #admin{
-	background-color:#FFFF00;
+	background-color:#cccccc;
 	width:920px;
 	float:left;
 	padding:20px;
