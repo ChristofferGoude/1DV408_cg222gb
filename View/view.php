@@ -2,7 +2,6 @@
 namespace View;
 
 class view{
-	
 	private static $login = "login";
 	private static $register = "register";
 	private static $registerUsername = "registerUsername";
@@ -116,17 +115,40 @@ class view{
 		$nr = 1;
 		
 		foreach($quiz as $question){
-			$html .= "<p><b>Fråga " . $nr . ": </b>" . $question["question"] . "</p><br />
+			
+			$html .= "<form action='?' method='post'>
+					  <p><b>Fråga " . $nr . ": </b>" . $question["question"] . "</p><br />
 					  <p><b>Svarsalternativ:</b> " . $question["answer1"] . " " . $question["answer2"] . " " . $question["answer3"] . "</p>
-					  <form>
-					  	  <input type='text' size='30' name='" . $question["question"] . "' id='' value='' />
-			 	  	  </form>";
+				  	  <input type='text' size='30' name='" . $nr . "' id='' value='' />";
 			$nr++;
 		}
 		
-		$html .= "<form action='?' method='post'>
-					  <input type='submit' class='' name='" . self::$sendQuiz . "' value='Skicka svar!' />
+		$html .= "<br />
+				  	  <input type='submit' class='' name='" . self::$sendQuiz . "' value='Skicka svar!' />
 			 	  </form>";
+		
+		return $html;
+	}
+	
+	public function getUserScore($quiz){
+		$score = 0;
+		$nr = 1;
+		
+		foreach($quiz as $question){		
+			if($question["correctAnswer"] == $_POST[$nr]){
+				$score++;
+			}
+			
+			$nr++;
+		}
+		
+		return $score;
+	}
+	
+	public function showUserScore($score){
+		$content = "<p>Du fick <b>" . $score . " poäng!</p>";
+		$content .= $this->backButton();
+		$html = $this->getContent($content);
 		
 		return $html;
 	}
@@ -243,10 +265,6 @@ class view{
 	
 	public function sendQuiz(){
 		return isset($_POST[self::$sendQuiz]);
-	}
-	
-	public function getAllAnswers($quiz){
-		
 	}
 	
 	//BACK-BUTTON

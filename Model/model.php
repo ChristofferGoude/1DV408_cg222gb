@@ -4,8 +4,6 @@ namespace Model;
 require_once("Model/dal.php");
 
 class model{
-	//TODO: Everything
-	
 	private $db;
 	private static $session = "";
 	
@@ -48,11 +46,19 @@ class model{
 		return $this->db->getAllQuiz();
 	}
 	
+	public function getQuizID($quizname){
+		return $this->db->getQuizID($quizname);
+	}
+	
 	public function getSpecificQuiz($quizname){
 		return $this->db->getSpecificQuiz($quizname);
 	}
 	
 	public function createNewQuiz($newQuizName, $newQuiz){
 		return $this->db->createNewQuiz($newQuizName, $newQuiz);
+	}
+	
+	public function insertUserScore($quizID, $points){
+		return $this->db->insertUserScore($quizID, $points);
 	}
 }

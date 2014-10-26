@@ -2,8 +2,6 @@
 namespace Model;
 
 class dal{
-	//TODO: Everything
-	
 	private static $dbh = "";
 	private static $hostname = "quiz-166006.mysql.binero.se";
 	private static $localhost = "127.0.0.1";
@@ -127,7 +125,29 @@ class dal{
 		}
 	}
 	
+	public function getQuizID($quizname){
+		try{		
+			$this->createConnection();
+			
+			$sql = "SELECT quizID FROM quiz WHERE quizname = :quizname";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizname", $quizname);
+			$query->execute();
+		
+			$quizID = $query->fetchColumn(0);
+			
+			self::$dbh = null;
+			
+			return $quizID;
+		}
+		catch (PDOException $e){
+			return "Databasqueryn misslyckades. " . $e->getMessage();
+		}
+	}
+	
 	public function getSpecificQuiz($quizname){
+		//TODO: Integrate this with above function (DRY)!	
+			
 		try{		
 			$this->createConnection();
 			
@@ -178,13 +198,36 @@ class dal{
 				$query->bindParam(":answer1", $question[1]);
 				$query->bindParam(":answer2", $question[2]);
 				$query->bindParam(":answer3", $question[3]);
-				$query->bindParam(":correctAnswerw", $question[4]);
+				$query->bindParam(":correctAnswer", $question[4]);
 				$query->execute();	  		
 			}
 			
 			self::$dbh = null;
 							  
 			return "Ditt quiz skapades!";
+		}
+		catch (\PDOException $e){
+			return "Det gick inte att registrera dig. " . $e->getMessage();
+		}
+	}
+
+	public function insertUserScore($quizID, $score){
+		try{
+			if(false){
+				throw new \PDOException("Du måste ange både användarnamn och lösenord!");
+			}
+			
+			$this->createConnection();	
+			
+			$sql = "INSERT INTO scores (quizID, score) VALUES (:quizID, :score)";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizID", $quizID);
+			$query->bindParam(":score", $score);
+			$query->execute();
+							  
+			self::$dbh = null;
+							  
+			return "Din användare skapades!";
 		}
 		catch (\PDOException $e){
 			return "Det gick inte att registrera dig. " . $e->getMessage();

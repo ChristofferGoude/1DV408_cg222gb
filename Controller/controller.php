@@ -5,7 +5,6 @@ require_once("View/view.php");
 require_once("Model/model.php");
 
 class controller{
-	//TODO: Everything! 
 	/**
 	 * @var $view
 	 * @var $model
@@ -29,9 +28,14 @@ class controller{
 		
 		if($this->view->sendQuiz()){
 			//TODO: Fix so stuff happens when user wants to send their answers			
-			$quiz = $this->model->getSpecificQuiz(self::$quizName);
 			
-			var_dump($quiz);
+			$quizID = $this->model->getQuizID(self::$quizName);
+			$quiz = $this->model->getSpecificQuiz(self::$quizName);
+			$score = $this->view->getUserScore($quiz);
+			
+			$this->model->insertUserScore($quizID, $score);
+			
+			$this->body = $this->view->showUserScore($score);
 		}
 		
 		if($this->view->registerAttempt()){
