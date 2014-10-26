@@ -14,6 +14,7 @@ class controller{
 	private $body;
 	private $view;
 	private $model;
+	private static $quizName = "";
 	
 	public function __construct(){
 		//TODO: Initiation
@@ -28,6 +29,9 @@ class controller{
 		
 		if($this->view->sendQuiz()){
 			//TODO: Fix so stuff happens when user wants to send their answers			
+			$quiz = $this->model->getSpecificQuiz(self::$quizName);
+			
+			var_dump($quiz);
 		}
 		
 		if($this->view->registerAttempt()){
@@ -65,27 +69,26 @@ class controller{
 	public function sessionStatus(){
 		if($this->model->checkSessionStatus() != false){
 			$username = $this->model->checkSessionStatus();	
-			$quizName = "";
 			
 			$returnstring = $this->view->getContent("Välkommen " . $username . $this->view->logoutButton());
 				
 			$quizArray = $this->model->getAllQuiz();
 			
 			foreach($quizArray as $quiz){
-				$quizName = $quiz["quizname"]; 
-				
-				if($this->view->answerQuiz($quizName)){
+				self::$quizName = $quiz["quizname"]; 
+
+				if($this->view->answerQuiz(self::$quizName)){
 					//TODO: Insert function here to take user to answering quiz
 
-					$quiz = $this->model->getSpecificQuiz($quizName);
+					$quiz = $this->model->getSpecificQuiz(self::$quizName);
 					
-					$returnstring .= $this->view->showUserQuiz($quizName, $quiz);
+					$returnstring .= $this->view->showUserQuiz(self::$quizName, $quiz);
 					$returnstring .= $this->view->backButton();
 					
 					return $returnstring;
 				}
 				
-				$returnstring .= $this->view->getQuizList($quizName);
+				$returnstring .= $this->view->getQuizList(self::$quizName);
 			}
 			
 			if($this->model->checkAdminStatus($username)){
