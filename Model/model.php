@@ -44,8 +44,12 @@ class model{
 		return $loginResult;	
 	}
 	
-	public function getQuiz(){
-		return $this->db->getQuiz();
+	public function getAllQuiz(){
+		return $this->db->getAllQuiz();
+	}
+	
+	public function getSpecificQuiz($quizname){
+		return $this->db->getSpecificQuiz($quizname);
 	}
 	
 	public function createNewQuiz($newQuizName, $newQuiz){

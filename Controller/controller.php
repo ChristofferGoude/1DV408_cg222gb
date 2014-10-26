@@ -26,6 +26,10 @@ class controller{
 		//Begin with checking user session status through the model.
 		$this->body = $this->sessionStatus();
 		
+		if($this->view->sendQuiz()){
+			//TODO: Fix so stuff happens when user wants to send their answers			
+		}
+		
 		if($this->view->registerAttempt()){
 			$userInfo = $this->view->getUserRegInfo();
 			
@@ -65,11 +69,23 @@ class controller{
 			
 			$returnstring = $this->view->getContent("Välkommen " . $username . $this->view->logoutButton());
 				
-			$quizArray = $this->model->getQuiz();
+			$quizArray = $this->model->getAllQuiz();
 			
 			foreach($quizArray as $quiz){
 				$quizName = $quiz["quizname"]; 
-				$returnstring .= $this->view->getContent($quizName);
+				
+				if($this->view->answerQuiz($quizName)){
+					//TODO: Insert function here to take user to answering quiz
+
+					$quiz = $this->model->getSpecificQuiz($quizName);
+					
+					$returnstring .= $this->view->showUserQuiz($quizName, $quiz);
+					$returnstring .= $this->view->backButton();
+					
+					return $returnstring;
+				}
+				
+				$returnstring .= $this->view->getQuizList($quizName);
 			}
 			
 			if($this->model->checkAdminStatus($username)){

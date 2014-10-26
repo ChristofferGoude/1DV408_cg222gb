@@ -10,24 +10,14 @@ class view{
 	private static $loginUsername = "loginUsername";
 	private static $loginPassword = "loginPassword";
 	private static $logout = "logout";
-	private static $back ="back";
+	private static $back = "back";
+	private static $sendQuiz = "sendQuiz";
 	
 	// Variables used when creating a quiz
 	
 	private static $quizname = "quizname";
-	private static $question1 = "question1";
-	private static $question2 = "question2";
-	private static $question3 = "question3";
-	private static $q1a1 = "q1a1";
-	private static $q1a2 = "q1a2";
-	private static $q1a3 = "q1a3";
-	private static $q2a1 = "q2a1";
-	private static $q2a2 = "q2a2";
-	private static $q2a3 = "q2a3";
-	private static $q3a1 = "q3a1";
-	private static $q3a2 = "q3a2";
-	private static $q3a3 = "q3a3";
 	private static $addQuiz = "addQuiz";
+	private static $numberOfQuestions = 5;
 	
 	/**
 	 * @return String (Html)
@@ -41,36 +31,27 @@ class view{
 				        <title>Quiz</title>
 				    </head> 	
 					<body>
-						<div class='wrapper'>
-						
-							<div class='content'>
-								<img src='Images/banner2.png' />
+						<div class='header'>
+							<div class='wrapper'>
+								<a href='#main' rel=''><img class='center' src='Images/banner.png' /></a>
 							</div>
-							" . $body . "
 						</div>
+						<div class='maincontent'>
+							<a name='main' id='main'></a>
+							<div class='wrapper'>
+								<div class='content'>
+									" . $body . "
+								</div>
+							</div>
+						</div>
+					<!-- Scripts -->		
+					<script src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+					<script src='Javascript/js.js'></script>
+					<!-- End scripts -->
 					</body>
 				</html>";
 				
 		return $html;
-	}
-	
-	public function getLoggedInPage($body){
-		$html = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
-				    <head>
-				    	<link rel='stylesheet' type='text/css' href='CSS/normalize.css'>
-				    	<link rel='stylesheet' type='text/css' href='CSS/css.css'>
-				        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-				        <title>Quiz</title>
-				    </head> 	
-					<body>
-						<div class='wrapper'>
-							<img src='Images/banner2.png' />
-							<div>Välkommen " . $body . "</div>
-						</div>
-					</body>
-				</html>";
-				
-		return $html;		
 	}
 	
 	public function registerUser(){
@@ -118,45 +99,52 @@ class view{
 		return $html;
 	}
 	
+	public function getQuizList($content){
+		$button = "<form>
+				 	<input type='submit' class='quiz' name='" . $content . "' value='" . $content . "' />
+				 </form>";
+				 
+		$html = $this->getContent($button);
+		
+		return $html;
+	}
+	
+	public function showUserQuiz($quizname, $quiz){
+		self::$quizname = $quizname;
+		
+		$html = "<h2>" . $quizname . "</h2><br />";		
+		$nr = 1;
+		
+		foreach($quiz as $question){
+			$html .= "<p><b>Fråga " . $nr . ": </b>" . $question["question"] . "</p><br />
+					  <p><b>Svarsalternativ:</b> " . $question["answer1"] . " " . $question["answer2"] . " " . $question["answer3"] . "</p>
+					  <form>
+					  	  <input type='text' size='30' name='" . $question["question"] . "' id='' value='' />
+			 	  	  </form>";
+			$nr++;
+		}
+		
+		$html .= "<form action='?' method='post'>
+					  <input type='submit' class='' name='" . self::$sendQuiz . "' value='Skicka svar!' />
+			 	  </form>";
+		
+		return $html;
+	}
+	
 	public function getAdminInterface(){
 		$html = "<div id='admin'>
 				 	<h2>Admininterface</h2>
 				 	<form action='?' method='post'>		
 						<label for='Quizname' >Quiznamn :</label><br />
-						<input type='text' size='30' name='" . self::$quizname . "' id='Quizname' value='' /><br />
-						<label for='Question1' >Fråga 1 :</label><br />
-						<input type='text' size='30' name='" . self::$question1 . "' id='Question1' value='' /><br />		 
-							<div class='answers'>
-								<label for='Q1A1' >Svarsalternativ 1 :</label><br />
-								<input type='text' size='30' name='" . self::$q1a1 . "' id='Q1A1' value='' /><br />
-								<label for='Q1A2' >Svarsalternativ 2 :</label><br />
-								<input type='text' size='30' name='" . self::$q1a2 . "' id='Q1A2' value='' /><br />
-								<label for='Q1A3' >Svarsalternativ 3 :</label><br />
-								<input type='text' size='30' name='" . self::$q1a3 . "' id='Q1A3' value='' /><br />
-							 </div>
-						<label for='Question1' >Fråga 2 :</label><br />
-						<input type='text' size='30' name='" . self::$question2 . "' id='Question2' value='' /><br />
-							<div class='answers'>
-							 	<label for='Q2A1' >Svarsalternativ 1 :</label><br />
-							 	<input type='text' size='30' name='" . self::$q2a1 . "' id='Q2A1' value='' /><br />
-								<label for='Q2A2' >Svarsalternativ 2 :</label><br />
-								<input type='text' size='30' name='" . self::$q2a2 . "' id='Q2A2' value='' /><br />
-								<label for='Q2A3' >Svarsalternativ 3 :</label><br />
-								<input type='text' size='30' name='" . self::$q2a3 . "' id='Q2A3' value='' /><br />
-							</div>
-						 <label for='Question1' >Fråga 3 :</label><br />
-						 <input type='text' size='30' name='" . self::$question3 . "' id='Question3' value='' /><br />
-						 	<div class='answers'>
-							 	<label for='Q3A1' >Svarsalternativ 1 :</label><br />
-							 	<input type='text' size='30' name='" . self::$q3a1 . "' id='Q3A1' value='' /><br />
-								<label for='Q3A2' >Svarsalternativ 2 :</label><br />
-								<input type='text' size='30' name='" . self::$q3a2 . "' id='Q3A2' value='' /><br />
-								<label for='Q3A3' >Svarsalternativ 3 :</label><br />
-								<input type='text' size='30' name='" . self::$q3a3 . "' id='Q3A3' value='' /><br />
-							</div>
-						<input type='submit' name='" . self::$addQuiz . "' value='Skapa Quiz!' />
-					 </form>
-				 </div>";		
+						<input type='text' size='30' name='" . self::$quizname . "' id='Quizname' value='' /><br />";
+						
+						for($i = 1; $i <= self::$numberOfQuestions; $i++){
+							$html .= $this->createNewQuestion($i);
+						}
+						
+			$html .= "<input type='submit' name='" . self::$addQuiz . "' value='Skapa Quiz!' />
+					      </form>
+			 		  </div>";		
 			
 		return $html;
 	}
@@ -207,29 +195,58 @@ class view{
 	
 	//FUNCTIONS USED WHEN CREATING A QUIZ
 	
+	public function createNewQuestion($i){				
+		$html = "<label for='Question" . $i . "'>Fråga " . $i . ":</label><br />
+				 <input type='text' size='30' name='Question" . $i . "' id='Question" . $i . "' value='' /><br />		 
+				 <div class='answers'>
+					 <label for='Q" . $i . "AO1' >Svarsalternativ 1 :</label><br />
+					 <input type='text' size='30' name='Q" . $i . "AO1' id='Q" . $i . "AO1' value='' /><br />
+					 <label for='Q" . $i . "AO2' >Svarsalternativ 2 :</label><br />
+					 <input type='text' size='30' name='Q" . $i . "AO2' id='Q" . $i . "AO2' value='' /><br />
+					 <label for='Q" . $i . "AO3' >Svarsalternativ 3 :</label><br />
+					 <input type='text' size='30' name='Q" . $i . "AO3' id='Q" . $i . "AO3' value='' /><br />
+					 <label for='Q" . $i . "A' >Korrekt svar :</label><br />
+					 <input type='text' size='30' name='Q" . $i . "A' id='Q" . $i . "A' value='' /><br />
+			 	 </div>";
+				 
+		return $html;
+	}
+
 	public function getNewQuizName(){
 		return $_POST[self::$quizname];
 	}
 	
 	public function getNewQuizInfo(){
-		$newQuiz = array(array($_POST[self::$question1],
-						 	   $_POST[self::$q1a1],
-						 	   $_POST[self::$q1a2],
-						 	   $_POST[self::$q1a3]),
-						 array($_POST[self::$question2],
- 						 	   $_POST[self::$q2a1],
-						 	   $_POST[self::$q2a2],
-						 	   $_POST[self::$q2a3]),
-						 array($_POST[self::$question3],
- 						 	   $_POST[self::$q3a1],
-						 	   $_POST[self::$q3a2],
-						 	   $_POST[self::$q3a3]));
+		$newQuiz = array();		
+		for($i = 1; $i <= self::$numberOfQuestions; $i++){
+			$question = array($_POST["Question" . $i],
+		 	      			  $_POST["Q" . $i . "AO1"],
+		 	      			  $_POST["Q" . $i . "AO2"],
+		 	      			  $_POST["Q" . $i . "AO3"],
+		 	      			  $_POST["Q" . $i . "A"]);
+		 	      			  
+			array_push($newQuiz, $question);
+		}
 						 
 		return $newQuiz;
 	}
 	
 	public function createQuizAttempt(){
 		return isset($_POST[self::$addQuiz]);
+	}
+	
+	//FUNCTIONS USED WHEN ANSWERING A QUIZ
+	
+	public function answerQuiz($quizname){
+		return isset($_GET[$quizname]);
+	}
+	
+	public function sendQuiz(){
+		return isset($_POST[self::$sendQuiz]);
+	}
+	
+	public function getAllAnswers($quiz){
+		
 	}
 	
 	//BACK-BUTTON

@@ -108,7 +108,7 @@ class dal{
 		}	  
 	}
 	
-	public function getQuiz(){
+	public function getAllQuiz(){
 		try{		
 			$this->createConnection();
 			
@@ -117,6 +117,33 @@ class dal{
 			$query->execute();
 		
 			$quiz = $query->fetchAll();
+			
+			self::$dbh = null;
+			
+			return $quiz;
+		}
+		catch (PDOException $e){
+			return "Databasqueryn misslyckades. " . $e->getMessage();
+		}
+	}
+	
+	public function getSpecificQuiz($quizname){
+		try{		
+			$this->createConnection();
+			
+			$sql = "SELECT quizID FROM quiz WHERE quizname = :quizname";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizname", $quizname);
+			$query->execute();
+		
+			$quizID = $query->fetchColumn(0);
+			
+			$sql = "SELECT question, answer1, answer2, answer3, correctAnswer FROM questions WHERE quizID = :quizID";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizID", $quizID);
+			$query->execute();
+			
+			$quiz = $query->fetchAll(\PDO::FETCH_ASSOC);
 			
 			self::$dbh = null;
 			
@@ -144,13 +171,14 @@ class dal{
 			$quizID = self::$dbh->lastInsertId();
 			
 			foreach($newQuiz as $question){  
-				$sql = "INSERT INTO questions (quizID, question, answer1, answer2, answer3) VALUES (:quizID, :question, :answer1, :answer2, :answer3)";	
+				$sql = "INSERT INTO questions (quizID, question, answer1, answer2, answer3, correctAnswer) VALUES (:quizID, :question, :answer1, :answer2, :answer3, :correctAnswer)";	
 				$query = self::$dbh->prepare($sql);
 				$query->bindParam(":quizID", $quizID);
 				$query->bindParam(":question", $question[0]);
 				$query->bindParam(":answer1", $question[1]);
 				$query->bindParam(":answer2", $question[2]);
 				$query->bindParam(":answer3", $question[3]);
+				$query->bindParam(":correctAnswerw", $question[4]);
 				$query->execute();	  		
 			}
 			
