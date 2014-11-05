@@ -7,7 +7,7 @@ class dal{
 	private static $localhost = "127.0.0.1";
 	private static $dbname = "166006-quiz";
 	private static $user = "166006_bz22041";
-	private static $pass = "Lillstrumpa1";
+	private static $pass = "";
 	private static $session = "";
 	
 	public function __construct(){
