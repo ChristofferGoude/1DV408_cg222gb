@@ -33,9 +33,8 @@ class model{
 	}
 	
 	public function loginUser($username, $password){
-		$loginResult = $this->db->loginUser($username, $password);	
-		
-		if($loginResult != false){
+		$loginResult = $this->db->loginUser($username, $password);
+		if($loginResult == true){
 			$_SESSION[self::$session] = $username;
 		}
 		

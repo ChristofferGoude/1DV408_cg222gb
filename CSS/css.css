@@ -4,6 +4,7 @@ body {
 	overflow-y:scroll;
 	color:#231f20;
 	height:100%;
+	font-family: 'Open Sans', sans-serif;
 }
 
 input{
@@ -60,6 +61,10 @@ input{
 	background-color:#bebebe;
 }
 
+.extramargin{
+	margin:20px 0 20px 0;
+}
+
 /* IDs */
 
 #admin{
@@ -68,4 +73,13 @@ input{
 	float:left;
 	padding:20px;
 
+}
+
+#message{
+	background-color:#CCCCCC;
+	width:150px;
+	position:absolute;
+	padding:20px;
+	top:400px;
+	left:75%;
 }

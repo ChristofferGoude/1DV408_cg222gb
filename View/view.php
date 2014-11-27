@@ -11,6 +11,7 @@ class view{
 	private static $logout = "logout";
 	private static $back = "back";
 	private static $sendQuiz = "sendQuiz";
+	private static $nameErr = "TEST";
 	
 	// Variables used when creating a quiz
 	
@@ -24,6 +25,7 @@ class view{
 	public function getMainPage($body){
 		$html = "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
 				    <head>
+				    	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 				    	<link rel='stylesheet' type='text/css' href='CSS/normalize.css'>
 				    	<link rel='stylesheet' type='text/css' href='CSS/css.css'>
 				        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
@@ -58,7 +60,7 @@ class view{
 				 <h2>Registrera</h2>
 				 <form action='?' method='post'>		
 					 <label for='User' >Användarnamn :</label>
-					 <input type='text' size='30' name='" . self::$registerUsername . "' id='User' value='' />
+					 <input type='text' size='30' name='" . self::$registerUsername . "' id='User' value='" .  $this->getUserRegName() . "' />
 					 <label for='PassWord' >Lösenord  :</label>
 					 <input type='password' size='30' name='" . self::$registerPassword . "' id='PassWord' value='' />
 					 <input type='submit' name='" . self::$register . "' value='Registrera' />
@@ -68,12 +70,13 @@ class view{
 		return $html;
 	}
 	
-	public function notLoggedIn(){
+	public function loginUser(){
 		$html = "<div class='content'>
 					 <h2>Logga in</h2>
 					 <form action='?' method='post'>		
 						 <label for='User' >Användarnamn :</label>
-						 <input type='text' size='30' name='" . self::$loginUsername . "' id='User' value='' />
+						 <input type='text' size='30' name='" . self::$loginUsername . "' id='User' value='" . $this->getUserLoginName() . "' />
+						 <?php echo 'TEST'; ?>
 						 <label for='PassWord' >Lösenord  :</label>
 						 <input type='password' size='30' name='" . self::$loginPassword . "' id='PassWord' value='' />
 						 <input type='submit' name='" . self::$login . "' value='Logga In' />
@@ -183,6 +186,14 @@ class view{
 		return $userInfo;	
 	}
 
+	public function getUserRegName(){
+		if(isset($_POST[self::$registerUsername])){
+			return $_POST[self::$registerUsername];
+		}
+		else{
+			return "";
+		}
+	}
 	
 	//FUNCTIONS USED WHEN LOGGING IN A USER
 		
@@ -194,6 +205,15 @@ class view{
 		$userInfo = array($_POST[self::$loginUsername], $_POST[self::$loginPassword]);
 		
 		return $userInfo;	
+	}
+	
+	public function getUserLoginName(){
+		if(isset($_POST[self::$loginUsername])){
+			return $_POST[self::$loginUsername];
+		}
+		else{
+			return "";
+		}
 	}
 	
 	//FUNCTIONS USED WHEN LOGGING OUT
@@ -208,7 +228,7 @@ class view{
 	}
 	
 	public function logoutButton(){
-		return "<div>
+		return "<div class='extramargin'>
 					<form action='?' method='post'>
 						<input type='submit' name='" . self::$logout . "' value='Logga ut' />
 					</form>
@@ -274,10 +294,18 @@ class view{
 	}
 	
 	public function backButton(){
-		return "<div>
+		return "<div class='extramargin'>
 					<form action='?' method='post'>
 						<input type='submit' name='" . self::$back . "' value='Tillbaka' />
 					</form>
 				</div>";		
+	}
+	
+	public function insertMessage($content){
+		$html = "<div id='message'>
+				 	" . $content . "
+				 </div>";
+				 
+		return $html;
 	}
 }

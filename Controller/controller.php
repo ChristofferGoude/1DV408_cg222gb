@@ -15,9 +15,7 @@ class controller{
 	private $model;
 	private static $quizName = "";
 	
-	public function __construct(){
-		//TODO: Initiation
-		
+	public function __construct(){	
 		$this->view = new \View\view();
 		$this->model = new \Model\model();
 	}
@@ -26,9 +24,7 @@ class controller{
 		//Begin with checking user session status through the model.
 		$this->body = $this->sessionStatus();
 		
-		if($this->view->sendQuiz()){
-			//TODO: Fix so stuff happens when user wants to send their answers			
-			
+		if($this->view->sendQuiz()){		
 			$quizID = $this->model->getQuizID(self::$quizName);
 			$quiz = $this->model->getSpecificQuiz(self::$quizName);
 			$score = $this->view->getUserScore($quiz);
@@ -41,30 +37,32 @@ class controller{
 		if($this->view->registerAttempt()){
 			$userInfo = $this->view->getUserRegInfo();
 			
-			$this->body = $this->model->registerUser($userInfo[0], $userInfo[1]);
+			//TODO: Ett eget fönster för denna information
+			$this->body .= $this->view->insertMessage($this->model->registerUser($userInfo[0], $userInfo[1]));
 		}
 		
 		if($this->view->loginAttempt()){
 			$userInfo = $this->view->getUserLoginInfo();	
-				
-			if(!($this->model->loginUser($userInfo[0], $userInfo[1]))){
-				$this->body = $this->view->verificationFailed();
+
+			if($this->model->loginUser($userInfo[0], $userInfo[1])){
+				$this->body = $this->sessionStatus();
 			}
 			else{
-				$this->body = $this->sessionStatus();
+				//Handle error message
+				$this->body .= $this->view->insertMessage("Inloggningen misslyckades.");
 			}
 		}
 		
 		if($this->view->logoutAttempt()){
-			$this->body = $this->view->registerUser() . $this->view->notLoggedIn();
+			$this->body = $this->view->registerUser() . $this->view->loginUser();
 		}
 		
 		if($this->view->createQuizAttempt()){
 			$newQuizName = $this->view->getNewQuizName();	
 			$newQuiz = $this->view->getNewQuizInfo();
-			$this->model->createNewQuiz($newQuizName, $newQuiz);
+			$message = $this->model->createNewQuiz($newQuizName, $newQuiz);
 			
-			$this->body = $this->sessionStatus();
+			$this->body = $this->sessionStatus() . $this->view->insertMessage($message);
 		}
 		
 		return $this->view->getMainPage($this->body);
@@ -102,7 +100,7 @@ class controller{
 			return $returnstring;
 		}
 		else{
-			return $this->view->registerUser() . $this->view->notLoggedIn();
+			return $this->view->registerUser() . $this->view->loginUser();
 		}
 	}
 }

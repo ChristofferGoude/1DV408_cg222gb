@@ -7,7 +7,7 @@ class dal{
 	private static $localhost = "127.0.0.1";
 	private static $dbname = "166006-quiz";
 	private static $user = "166006_bz22041";
-	private static $pass = "";
+	private static $pass = "***";
 	private static $session = "";
 	
 	public function __construct(){
@@ -57,8 +57,25 @@ class dal{
 	
 	public function registerUser($username, $password){		
 		try{
+			if(!($this->checkForTags($username)) || !($this->checkForTags($password))){
+				throw new \PDOException("Användarnamnet eller lösenordet får inte innehåller taggar av säkerhetsskäl.");
+			}
+			
 			if($username == "" || $password == ""){
-				throw new \PDOException("Du måste ange både användarnamn och lösenord!");
+				$errortext = "Följande information saknas: ";
+				
+				if($username == ""){
+					$errortext .= "Användarnamn ";
+				}
+				if($password == ""){
+					$errortext .= "Lösenord ";
+				}
+				
+				throw new \PDOException($errortext);
+			}
+			
+			if($this->checkUserNameExists($username)){
+				throw new \PDOException("Detta användarnamn finns redan registrerat. Var god välj ett annat namn.");
 			}
 			
 			$this->createConnection();	
@@ -74,7 +91,7 @@ class dal{
 			return "Din användare skapades!";
 		}
 		catch (\PDOException $e){
-			return "Det gick inte att registrera dig. " . $e->getMessage();
+			return $e->getMessage();
 		}
 	}
 	
@@ -95,15 +112,35 @@ class dal{
 			self::$dbh = null;
 							  
 			if($query->rowCount() > 0){
-				return $username;
+				return true;
+			}	
+		}		
+		catch (\PDOException $e){
+			return false;//"Det gick inte att logga in dig. " . $e->getMessage();
+		}	  
+	}
+	
+	public function checkUserNameExists($username){
+		try{					
+			$this->createConnection();	
+			
+			$sql = "SELECT username FROM users WHERE username = :username";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":username", $username);
+			$query->execute();
+			
+			self::$dbh = null;
+							  
+			if($query->rowCount() > 0){
+				return true;
 			}	
 			else{
 				return false;
 			}	
 		}		
 		catch (\PDOException $e){
-			return "Det gick inte att logga in dig. " . $e->getMessage();
-		}	  
+			return "Ett oväntat fel uppstog.";
+		}	
 	}
 	
 	public function getAllQuiz(){
@@ -121,7 +158,7 @@ class dal{
 			return $quiz;
 		}
 		catch (PDOException $e){
-			return "Databasqueryn misslyckades. " . $e->getMessage();
+			return "Databasqueryn misslyckades.";
 		}
 	}
 	
@@ -178,8 +215,16 @@ class dal{
 		$quizID = "";	
 			
 		try{
-			if(false){
-				throw new \PDOException("Du måste ange både användarnamn och lösenord!");
+			if($newQuizName == ""){
+				throw new \PDOException("Du måste ange ett quiznamn!");
+			}
+			
+			foreach($newQuiz as $question){
+				foreach($question as $entry){
+					if($entry == ""){
+						throw new \PDOException("Du måste fylla i samtliga frågor, svar, och svarsalternativ!");
+					}
+				}
 			}
 			
 			$this->createConnection();	
@@ -207,7 +252,7 @@ class dal{
 			return "Ditt quiz skapades!";
 		}
 		catch (\PDOException $e){
-			return "Det gick inte att registrera dig. " . $e->getMessage();
+			return "Det gick inte att skapa ditt quiz. " . $e->getMessage();
 		}
 	}
 
@@ -232,5 +277,15 @@ class dal{
 		catch (\PDOException $e){
 			return "Det gick inte att registrera dig. " . $e->getMessage();
 		}
+	}
+	
+	public function checkForTags($string){
+		if(strip_tags($string) == $string){
+			return true;
+		}
+		else{
+			return false;
+		}
+		
 	}
 }
