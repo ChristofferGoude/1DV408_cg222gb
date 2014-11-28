@@ -150,7 +150,21 @@ class view{
 	}
 	
 	public function showUserScore($score){
-		$content = "<p>Du fick <b>" . $score . " poäng!</p>";
+		$content = "<p>Du fick <b>" . $score . "</b> poäng!</p>";
+		
+		if($score == 0){
+			$content .= "<p>Du får nog tänka efter lite mer nästa gång!</p>";
+		}
+		else if($score > 0 && $score < 4){
+			$content .= "<p>Det där gick ju nästan bra! Klura lite mer och pröva igen!</p>";
+		}
+		else if($score == 4){
+			$content .= "<p>Riktigt bra! Nästan full pott!</p>";
+		}
+		else if($score == 5){
+			$content .= "<p>Fantastiskt, full pott!</p>";
+		} 
+		
 		$content .= $this->backButton();
 		$html = $this->getContent($content);
 		
