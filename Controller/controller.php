@@ -84,6 +84,7 @@ class controller{
 
 					$quiz = $this->model->getSpecificQuiz(self::$quizName);
 					
+					$returnstring = $this->view->getContent("Välkommen " . $username . $this->view->logoutButton());
 					$returnstring .= $this->view->showUserQuiz(self::$quizName, $quiz);
 					$returnstring .= $this->view->backButton();
 					

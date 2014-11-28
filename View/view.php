@@ -120,9 +120,10 @@ class view{
 		foreach($quiz as $question){
 			
 			$html .= "<form action='?' method='post'>
-					  <p><b>Fråga " . $nr . ": </b>" . $question["question"] . "</p><br />
-					  <p><b>Svarsalternativ:</b> " . $question["answer1"] . " " . $question["answer2"] . " " . $question["answer3"] . "</p>
-				  	  <input type='text' size='30' name='" . $nr . "' id='' value='' />";
+					  <p><b>Fråga " . $nr . ": </b>" . $question["question"] . "</p>
+					  <p><b>Svarsalternativ:<br /></b> " . $question["answer1"] . "<br />" . $question["answer2"] . "<br />" . $question["answer3"] . "</p>
+				  	  <label for='Answer' >Svar :</label>
+				  	  <input type='text' size='30' name='" . $nr . "' id='Answer' value='' />";
 			$nr++;
 		}
 		
