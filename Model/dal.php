@@ -7,7 +7,7 @@ class dal{
 	private static $localhost = "127.0.0.1";
 	private static $dbname = "166006-quiz";
 	private static $user = "166006_bz22041";
-	private static $pass = "";
+	private static $pass = "*";
 	private static $session = "";
 	
 	public function __construct(){
@@ -16,7 +16,7 @@ class dal{
 
 	public function createConnection(){	
 		try {
-		    self::$dbh = new \PDO("mysql:host=" . self::$localhost . ";dbname=" . self::$dbname . "", self::$user, self::$pass, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		    self::$dbh = new \PDO("mysql:host=" . self::$hostname . ";dbname=" . self::$dbname . "", self::$user, self::$pass, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 			self::$dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);		
 			
 			return self::$dbh;
@@ -182,20 +182,36 @@ class dal{
 		}
 	}
 	
-	public function getSpecificQuiz($quizname){
-		//TODO: Integrate this with above function (DRY)!	
+	public function checkQuizNameExists($quizname){
+		try{					
+			$this->createConnection();	
 			
-		try{		
-			$this->createConnection();
-			
-			$sql = "SELECT quizID FROM quiz WHERE quizname = :quizname";	
+			$sql = "SELECT quizname FROM quiz WHERE quizname = :quizname";	
 			$query = self::$dbh->prepare($sql);
 			$query->bindParam(":quizname", $quizname);
 			$query->execute();
-		
-			$quizID = $query->fetchColumn(0);
 			
-			$sql = "SELECT question, answer1, answer2, answer3, correctAnswer FROM questions WHERE quizID = :quizID";	
+			self::$dbh = null;
+							  
+			if($query->rowCount() > 0){
+				return true;
+			}	
+			else{
+				return false;
+			}	
+		}		
+		catch (\PDOException $e){
+			return "Ett oväntat fel uppstog.";
+		}	
+	}
+	
+	public function getSpecificQuiz($quizname){		
+		try{			
+			$quizID = $this->getQuizID($quizname);
+			
+			$this->createConnection();
+			
+			$sql = "SELECT questionID, question, answer1, answer2, answer3, correctAnswer FROM questions WHERE quizID = :quizID";	
 			$query = self::$dbh->prepare($sql);
 			$query->bindParam(":quizID", $quizID);
 			$query->execute();
@@ -218,11 +234,24 @@ class dal{
 			if($newQuizName == ""){
 				throw new \PDOException("Du måste ange ett quiznamn!");
 			}
+			if(preg_match('/\s/', $newQuizName)){
+				throw new \PDOException("Quiznamnet får inte innehålla mellanslag!");
+			}
+			if($this->checkQuizNameExists($newQuizName)){
+				throw new \PDOException("Quiznamnet är redan använt! Välj ett annat namn.");
+			}
 			
 			foreach($newQuiz as $question){
 				foreach($question as $entry){
 					if($entry == ""){
 						throw new \PDOException("Du måste fylla i samtliga frågor, svar, och svarsalternativ!");
+					}
+					else if(!($this->checkForTags($entry))){
+						throw new \PDOException("Av säkerhetsskäl får du inte ha taggar med i quizen!");
+					}
+					
+					if($question[1] != $question[4] && $question[2] != $question[4] && $question[3] != $question[4]){	
+						throw new \PDOException("Det rätta svaret måste vara samma som något av svarsalternativen på frågan '" . $question[0] . "'.");
 					}
 				}
 			}
@@ -256,12 +285,87 @@ class dal{
 		}
 	}
 
-	public function insertUserScore($quizID, $score){
-		try{
-			if(false){
-				throw new \PDOException("Du måste ange både användarnamn och lösenord!");
+	public function updateQuiz($quiz, $questionIDs){		
+		try{	
+			foreach($quiz as $question){
+				foreach($question as $entry){
+					if($entry == ""){
+						throw new \PDOException("Du måste fylla i samtliga frågor, svar, och svarsalternativ!");
+					}
+					else if(!($this->checkForTags($entry))){
+						throw new \PDOException("Av säkerhetsskäl får du inte ha taggar med i quizen!");
+					}
+					
+					if($question[1] != $question[4] && $question[2] != $question[4] && $question[3] != $question[4]){	
+						throw new \PDOException("Det rätta svaret måste vara samma som något av svarsalternativen på frågan '" . $question[0] . "'.");
+					}
+				}
 			}
 			
+			$this->createConnection();	
+			$i = 0;
+			
+			foreach($quiz as $question){  
+				$sql = "UPDATE questions 
+						SET question = :question, 
+							answer1 = :answer1, 
+							answer2 = :answer2, 
+							answer3 = :answer3, 
+							correctAnswer = :correctAnswer
+						WHERE questionID = :questionID";	
+				$query = self::$dbh->prepare($sql);
+				$query->bindParam(":questionID", $questionIDs[$i]);
+				$query->bindParam(":question", $question[0]);
+				$query->bindParam(":answer1", $question[1]);
+				$query->bindParam(":answer2", $question[2]);
+				$query->bindParam(":answer3", $question[3]);
+				$query->bindParam(":correctAnswer", $question[4]);
+				$query->execute();	  		
+				
+				$i++;
+			}
+			
+			self::$dbh = null;
+							  
+			return "Ditt quiz uppdaterades!";
+		}
+		catch (\PDOException $e){
+			return "Det gick inte att uppdatera ditt quiz. " . $e->getMessage();
+		}
+	}
+
+	public function deleteQuiz($quizname){
+		try{			
+			$quizID = $this->getQuizID($quizname);
+			
+			$this->createConnection();
+			
+			$sql = "DELETE FROM questions WHERE quizID = :quizID";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizID", $quizID);
+			$query->execute();
+			
+			$sql = "DELETE FROM scores WHERE quizID = :quizID";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizID", $quizID);
+			$query->execute();
+			
+			$sql = "DELETE FROM quiz WHERE quizID = :quizID";	
+			$query = self::$dbh->prepare($sql);
+			$query->bindParam(":quizID", $quizID);
+			$query->execute();
+			
+			self::$dbh = null;
+			
+			return true;
+		}
+		catch (PDOException $e){
+			return false;
+		}
+	}
+
+	public function insertUserScore($quizID, $score){
+		try{
 			$this->createConnection();	
 			
 			$sql = "INSERT INTO scores (quizID, score) VALUES (:quizID, :score)";	

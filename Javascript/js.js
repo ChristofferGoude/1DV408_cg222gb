@@ -8,3 +8,11 @@ $('a').click(function(){
     }, 500);
     return false;
 });
+
+function confirmation(){
+    if (confirm("Är du säker?")) {
+    // Save it!
+    } else {
+        // Do nothing!
+    }
+}

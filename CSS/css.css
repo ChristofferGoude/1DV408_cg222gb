@@ -12,6 +12,10 @@ input{
 	margin:0 0 20px 0;
 }
 
+form{
+	margin:0;
+}
+
 /* Classes */
 .header{
 	background-image:url("../Images/header2.png");
@@ -35,7 +39,7 @@ input{
 .content{
 	width:960px;
 	float:left;
-	padding:20px 0 0 0;
+	padding:10px 0 10px 0;
 }
 
 .answers{
@@ -47,18 +51,40 @@ input{
 	margin:0 auto;
 }
 
-.quiz{
+.quiz, .delete, .update{
+	float:left;
 	margin:0;
 	padding:0;
-	background-color:#CCCCCC;
 	display:block;
 	border:none;
-	width:200px;
 	height:80px;
+}
+
+.quiz{
+	background-color:#CCCCCC;
+	width:200px;
+}
+
+.delete{
+	background-color:#e04848;
+	width:80px;
+}
+
+.update{
+	background-color:#3db069;
+	width:80px;
 }
 
 .quiz:hover{
 	background-color:#bebebe;
+}
+
+.delete:hover{
+	background-color:#cd4b4b;
+}
+
+.update:hover{
+	background-color:#459f64;	
 }
 
 .extramargin{
@@ -72,7 +98,7 @@ input{
 	width:920px;
 	float:left;
 	padding:20px;
-
+	margin:10px 0 10px 0;
 }
 
 #message{
